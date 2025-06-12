@@ -1,0 +1,645 @@
+REACT UDEMY
+*State uppdaterar komponenten med en re-render från en 'event handler' --> setCount((count)=> count + 1);
+*Derived state: Om du kan räkna ut ett värde från annan state → gör det direkt! Då är det derived state. Ex:
+-export default function Game() {
+  const [score, setScore] = useState(0); // bara score är state
+  // level är derived state – den räknas ut direkt från score
+  const level = score > 200 ? 3 : score > 100 ? 2 : 1;
+  return (
+    <div>
+      <h1>Poäng: {score}</h1>
+      <h2>Nivå: {level}</h2>
+      <button onClick={() => setScore(score + 10)}>Lägg till 10 poäng</button>
+    </div>
+  );
+}
+*{children}: Använd children när du vill skicka innehåll som visas inuti komponenten. Ex:
+-function MyButton({ children }) {
+  return <button>{children}</button>;
+}
+<MyButton>Tryck här!</MyButton>
+<MyButton>Starta spelet</MyButton>
+- Man kan då justera innehållet inuti komponenten med JSX genom att använda öppning/stängning av komponenten istället för en enskild komponent med props.
+*Props: Använd vanliga props när du vill skicka värden eller inställningar.
+*Inverse data flow: Flytta upp state till en parent komponent, och passera ex setCupong (useState) till en child komponent och få ett tvåvägs dataflow
+*Lägg till ett Item i en Array: setItems((items) => [...items, item]); <--- lägg i en handlerfunctions som tar item som parameter och passera handlerfunction ner till komponenten som behöver den.
+*Ta bort ett Item ur en Array: setItems((items) => items.filter((item) => item.id !== id)); <--- Lägg i en handlerfunction som tar emot id som parameter och passera ser handlerfunction som props till rätt komponent. Aktivera sedan med en arrowfunction in´en onclick={} -->
+<button onClick={()=> onDeleteItem(item.id)}
+*Rensa en Array: setItems([]) --> lägg inuti en handlerfunction.
+*Dela upp komponenter till separata komponent filer: kolappsa funktionen --> högerklicka ---> refactor ---> move to new file.
+*Handlerfunctions: En handlerfunktion är som robotens instruktioner. Det är en speciell funktion som säger vad som ska hända när något händer — till exempel när du klickar på en knapp, skriver i en ruta, eller skickar in ett formulär.
+*Visa en komponent: {showAddFriend && <FormAddFriend onAddFriend={handleAddFriend} />} och {showAddFriend ? "Close" : "Add friend"}.
+-Lägg till js-mode runt komponenten {showAddfriend && **Komponent**}
+*e.preventDefault(): används för att stoppa standardbeteendet (t.ex. ladda om sidan). Man använder det i formulär när man vill göra något med datan utan att sidan ska laddas om. onChange används för att fånga det användaren skriver i en input, och spara det i t.ex. en state.
+
+///////////////////JAVASCRIPT ESSENTIALS//////////////////
+*Destructuring: 'Destructuring är en syntax i JavaScript som gör det lättare att plocka ut värden från arrays eller objekt och tilldela dem till variabler på ett enkelt sätt.'
+*Objekt destructuring → för att få ut värden via deras property-namn.
+- const { title, author, pages, publicationDate, genres, hasMovieAdaptation } =
+  book; 
+*Array destructuring:
+- Arrayer → för att få ut värden via deras position/index.
+- const [primaryGenre, secondaryGenre] = genres;
+
+*Terneraries: 'Ternary operators (eller "ternaries") används för kortare if-else-logik direkt i JSX – ofta vid rendering'.
+- När du vill visa olika komponenter eller text beroende på ett villkor.
+- const pagesRange = pages > 100 ? "over a thousand" : "less than 100";
+
+*Arrow functions
+- För att skriva komponenter (funktionella komponenter).
+- För eventhandlers (t.ex. onClick).
+- const Hello = () => {
+  return <h1>Hej världen!</h1>;
+-const getYear(str) => str.split("-")[0];
+
+*&& -end operator
+-Short circut om första värdet blir false.
+-const hasManyPages = pages > 1000 && "This book is long";
+
+*|| -or operator
+-Short circut när första värdet är true.
+-const bookTitle = title || "No title available";
+
+*?? -Nullish coalescing
+-Default om värdet är falsy, ex tom string eller 0. som '|| -or operator' men retunerar fortfarande '0' istället för NaN/undefined.
+-const missingData = null; -const result = missingData ?? "Fallback value";
+
+*Rest operator: 'Samla ihop övrig information från arrayen med Rest ... FÖRE variabeln som placeras i slutet'. Resterande genres hamnar nedan i 'otherGenres'.
+- const [primaryGenre, secondaryGenre, ...otherGenres] = genres;
+- När du vill kopiera en array eller ett objekt utan att förändra originalet (immutability).
+- När du vill slå ihop flera arrayer eller objekt.
+- När du skickar in element som enskilda argument till en funktion.
+
+*Spread operator i en array (POST): 'Används när du kopierar eller lägger till i arrays/objekt, eller skickar argument till funktioner';
+-const newGenres = [...genres, "epic fantasy"]; <-- Lägger till en ny parameter i en array EFTER att spread har använts
+- Den gör motsatsen till rest-operatorn: den "packar upp"'.
+*Spread i ett obekt: 'lägg till nya parametrar'
+-const updatedBook = { ...book, moviePublicationDate: "2001-12-19" };
+*Spread i ett objekt där vi skriver över en property:
+- const updatedBook = {
+  ...book,
+  moviePublicationDate: "2001-12-19",
+  pages: 1210,
+};
+
+*.map(): 'När du vill loopa över en array och skapa en ny array baserat på innehållet, eller utföra en operation på objektet/arrayen eller tex. för att rendera listor i React.'
+- const books = ["Dune", "1984", "The Hobbit"];
+const BookList = () => {
+  return (
+    <ul>
+      {books.map((book, index) => (
+        <li key={index}>{book}</li>
+      ))}
+    </ul>
+  );
+};
+-const x = [1,2,3,4,5].map((el)=> el * 2)
+-const titles = books.map((book)=> book.title) --> Skapar en array med book.titles.
+-const essentialData = books.map(book=> ({
+title: book.title,
+author: book.author
+}))					       --> Skapar en array med book.title och book.author.
+
+*.filter(): Lägger ett condition och filtrerar ut allt i en Array som är true och skapar en ny array. Det går även att köra filter på den nya arrayen.
+-const longBooks = getBooks().filter((book) => book.pages > 500);	<-- Skapar en ny array med alla books med över 500 pages.
+-const adventureBooks = getBooks().filter((book) =>		
+  book.genres.includes("adventure")					<-- Skapar en ny array med alla books med genres 'adventure' i objektet.
+);
+
+*reduce(): mer komplicerad, men kan göra det mesta i form av matematiska ekvationer. Nedan hämtas alla böcker och räknar ut alla sidor på samtliga böcker:
+-const pagesAllBooks = getBooks().reduce((acc, book) => acc + book.pages, 0);
+
+*sort(): Sorterar en array från lägst till högst eler vice verca. VIKTIGT: sort() muterar en array, den skapar inte en ny. För att lösa det bör man chaina slice() för att skapa en kopia.
+-const arr = [3, 7, 1, 9, 6];
+const sorted = arr.slice()sort((a, b) => a - b);			<.. Sorterad lista fallande ordning.
+-const sortedByPages = books.slice().sort((a, b) => b.pages - a.pages);	<-- Sorterad lista i stigande oprdning
+
+POST/DELETE/PUT - Immutable Arrays
+*Immutible arrays, uppdatera en array med en ny array.
+*Lägg till en book (spread)-POST:
+-const booksAfterAdd = [...books, newbook]; <--(spread och lägg till)
+*Ta bort en bok (filter)-DELETE:
+-const booksAfterrDelete = booksArfterAdd.filter(books => books.id !==3) <--()iterera books och filtrera bort book med id = 3)
+*Ändra i en bok:
+-const booksAfterUpdate (map)-PUT = booksAfterDelete.map(books=>nbook.id ===1 ? {...book, pages: 1} : book) <--(mapa arrayen och gör book med id = 1 till 1 sida)
+
+*Async/Await- lämnar ett promise som behöver inväntas. 
+
+///////////////////COMPONENTS, PROPS AND JSX//////////////////
+*Props. Passeras från förälder till children, skickas som argument till en funktion. Props är immutable, det går inte att ändra på datan! Behöver datan manipuleras så behövs State. 
+*map(), använd för att rendera ut listor, react behöver en 'key' prop när listor ska renderas. Detta fungerar i en komponent:
+-        {pizzaData.map((pizza) => (
+          <Pizza pizzaObj={pizza} key={pizza.name} />
+        ))}
+*Conditial rendering i en react komponent:
+- function Pizza({ name, soldOut }) {
+  return (
+    <li className={`pizza ${soldOut ? "sold-out" : ""}`}>
+      <h3>{name}</h3>
+      {soldOut ? <p>Sold out!</p> : <p>Available now!</p>}
+    </li>
+  );
+}
+
+///////////////////STATE, EVENTS & FORMS//////////////////
+*State: Data som en komponent kan hålla över tid, se det som komponentens minne. Att uppdatera State triggar komponenten att uppdateras. Det gör att jag kan uppdatera en komponents view hålla lokala variabler mellan renderingar.
+-   const [step, setStep] = useState(1); <--- Hook, hooks kan bara kallas på top-level i en funktion.
+*State --> intern data för komponenten
+*Props --> Extern data från parent, read only
+*Form inputfield, skicka med parametrar i html fältet för input "controlled element":
+-<input value={step} onChange={(e) => setStep(Number(e.target.value))} />
+*Reset knapp på useState: <button onClick={() => {
+          setCount(0);
+          setStep(5); }}>
+
+///////////////////THINKING IN REACT, STATE MANAGMENT//////////////////
+1. Bryt ner UI till komponenter.
+2. Bygg en statisk version (utan react)
+3. STATE: När? global vs local? Vart ska state sitta?'
+4. DATA FLOW: one way data flow! Child to parent! Global State!
+WHEN:
+*Need to store data --> Will data change?
+-No --> regular const variable
+-Yes --> can be computed from existing state/props?
+-Yes --> Derive State
+-No --> Should it re-render the component? 
+-No --> Ref  (useRef)
+-Yes --> Place new piece of state in the component.
+WHERE:
+*Only used by this component?
+-Yes --> Leave in component
+-No --> Also used by a child component?
+-Yes --> pass to child via props
+-No --> used by one or few sibling components?
+-Yes --> lift state up to first common parent
+-No --> Global State
+*Lifting up state! --> lyft till en parent komponent och passera som props genom komponenterna från ex. App:       <Form onAddItems={handleAddItems} /> 
+*DERIVED STATE: State  som räknas från en redan existerande state eller props.
+
+///////////////////ÖVRIGT///////////////
+*12. Setting up Dev inviroment. - Snippets för kortkomandon!
+*alt + pil upp/ner --> flytta kodraden
+* &times; --> X
+
+///////////////////FRÅGOR/TEST///////////////	
+JAVASCRIPT ESSENTIALS:
+1. Vad är Javasrcipt destructuring och när använder man det (arrays & object)?
+
+2. NÄR och HUR använder man 'terneraries' i React?
+
+3. HUR och NÄR använder man en arrow functions i React?
+
+4. HUR används &&- end operatorn?
+
+5. HUR används ||- or operatorn?
+
+6. NÄR används ??- nullish coalescing?
+
+7. Vad gör rest operatorn och när används den?
+
+8. Vad gör spread operatorn och när/hur används den?
+
+9. NÄR och HUR används map() method?	
+
+10. NÄR och HUR används filter() method?
+
+11. NÄR och HUR används reduce() method?
+
+12. NÄR och HUR används sort() method?
+
+13. NÄR och HUR används 'Immutable arrays'(POST/DELETE/PUT method)?
+
+14. Hur används async/await i Javascript?
+
+
+///////////////////COMPONENTS, PROPS AND JSX//////////////////
+1. Vad är props och hur används de i react?
+
+2. Hur används map() för att rendera ut listor i react?
+
+3. Hur använder man conditional rendering för att rendera komponenter?
+
+///////////////////TESTSVAR///////////////	
+JAVASCRIPT ESSENTIALS:
+1. Vad är Javasrcipt destructuring och när använder man det (arrays & object)?
+SVAR: 'Destructuring är en syntax i JavaScript som gör det lättare att plocka ut värden från arrays eller objekt och tilldela dem till variabler på ett enkelt sätt.'
+- Objekt → för att få ut värden via deras property-namn.
+- Arrayer → för att få ut värden via deras position/index.
+
+2. NÄR och HUR använder man 'terneraries' i React?
+SVAR: 'Ternary operators (eller "ternaries") används för kortare if-else-logik direkt i JSX – ofta vid rendering.'
+- När du vill visa olika komponenter eller text beroende på ett villkor.
+- När du vill undvika långa if-satser i return().
+- const terenarie = Villkor ? uttryck_om_sant : uttryck_om_falskt;
+
+3. HUR och NÄR använder man en arrow functions i React?
+SVAR:
+- För att skriva komponenter (funktionella komponenter).
+- För event handlers (t.ex. onClick).
+- const Hello = () => {
+  return <h1>Hej världen!</h1>;
+};
+ 
+4. NÄR och HUR används &&- end operatorn?
+SVAR: '&& används ofta för att visa något i UI:t endast om ett villkor är sant. Det är ett kort sätt att skriva if-logik direkt i JSX'
+- Enklare än att skriva if-satser.
+- Om isLoggedIn är true, visas texten: "Välkommen tillbaka!"
+- const WelcomeMessage = ({ isLoggedIn }) => {
+  return (
+    <div>
+      {isLoggedIn && <p>Välkommen tillbaka!</p>}
+    </div>
+  );
+};
+
+5. NÄR och HUR används ||- or operatorn?
+SVAR: '|| används när du vill visa ett fallback-värde (ersättning) om det första värdet är falsy (t.ex. null, undefined, false, "", 0).'
+- username = "Anna" → Visas: "Hej Anna! Om username = null eller undefined → Visas: "Hej gäst!" 
+-const WelcomeMessage = ({ username }) => {
+  return <p>Hej {username || "gäst"}!</p>;
+};
+
+6. NÄR och HUR används ??- nullish coalescing?
+SVAR: 'När du vill ge ett fallback-värde endast om det första värdet är null eller undefined, men inte om det är t.ex. false, 0, eller "" (tom sträng).'
+- När du vill behålla värden som 0, false eller "" men bara ersätta null eller undefined.
+- count = 0 → Visar: "Antal varor: 0" och count = undefined → Visar: "Antal varor: okänt"
+- const Items = ({ count }) => {
+  return <p>Antal varor: {count ?? "okänt"}</p>;
+};
+
+7. Vad gör rest operatorn och när används den?
+SVAR: 'Rest operatorn (...) används för att samla in resterande värden från en array eller ett objekt i en ny array eller nytt objekt. Den "packar ihop" resten'
+- När du vill ta ut vissa delar men spara övriga delar i en separat variabel.
+- När du skriver funktioner med okänt antal argument. 
+
+8. Vad gör spread operatorn och när/hur används den?
+SVAR: 'Spread operatorn (...) används för att sprida ut (kopiera) innehållet i en array eller ett objekt. Den gör motsatsen till rest-operatorn: den "packar upp"'.
+- När du vill kopiera en array eller ett objekt utan att förändra originalet (immutability).
+- När du vill slå ihop flera arrayer eller objekt.
+- När du skickar in element som enskilda argument till en funktion.
+
+9. NÄR och HUR används map() method?
+SVAR: 'När du vill loopa över en array och skapa en ny array baserat på innehållet — t.ex. för att rendera listor i React.'
+- map() returnerar en ny array.
+- Glöm inte key-prop när du renderar listor i React.
+- const books = ["Dune", "1984", "The Hobbit"];
+const BookList = () => {
+  return (
+    <ul>
+      {books.map((book, index) => (
+        <li key={index}>{book}</li>
+      ))}
+    </ul>
+  );
+};
+
+10. NÄR och HUR används filter() method?
+SVAR: 'När du vill skapa en ny array som endast innehåller de element som uppfyller ett visst villkor.'
+- const longBooks = books.filter((book) => book.pages > 300);
+console.log(longBooks);
+ 
+11. NÄR och HUR används reduce() method?
+SVAR: 'När du vill omvandla en array till ett enda värde – t.ex. summera tal, slå ihop objekt, eller bygga upp något nytt från en lista.'
+- reduce() tar två argument: en callback och ett startvärde (t.ex. 0 för summor)
+- Det är superkraftigt, men kan vara lite svårare att läsa än map() och filter() – använd det när det verkligen behövs.
+- const CartTotal = ({ cartItems }) => {
+  const total = cartItems.reduce((sum, item) => sum + item.price, 0);
+  return <p>Total: ${total}</p>;
+};
+
+12. NÄR och HUR används sort() method?
+SVAR: 'När du vill ändra ordningen på element i en array – till exempel sortera nummer, boktitlar, datum eller andra egenskaper'
+-.sort() muterar (ändrar) originalarrayen! Vill du behålla originalet, använd .slice() först:
+- const sortedBooks = books.slice().sort((a, b) => b.pages - a.pages);
+
+ 
+13. NÄR och HUR används 'Immutable arrays'(POST/DELETE/PUT method)?
+SVAR: 'Du använder immutable arrays när du vill bevara oförändrade data och skapa en ny kopia av en array istället för att direkt modifiera den. Detta är särskilt viktigt i applikationer som hanterar state, till exempel i React, där state inte bör muteras direkt.'
+- Immutable arrays är ofta fördelaktiga för att skapa förutsägbara och konsekventa applikationer, särskilt när det gäller state i React.
+-Använd alltid kopior av arrayer eller objekt för att undvika oavsiktliga mutationer.
+- POST: const updatedBooks = [...books, newBook]; (spread)
+- DELETE; const updatedBooks = books.filter((book) => book.title !== titleToRemove)
+- PUT: const updatedBooks = books.map((book) =>
+  book.title === updatedBook.title ? { ...book, ...updatedBook } : book
+);
+
+14. Hur används async/await i Javascript?
+SVAR: 'async och await är ett par funktioner i JavaScript som gör det enklare att arbeta med asynkrona operationer.'
+- async används för att deklarera en funktion som kommer att returnera ett Promise, och den gör att vi kan använda await inuti den funktionen.
+- await används för att vänta på att ett Promise ska lösas (eller avvisas), och det gör att vi kan arbeta med resultatet av det Promise utan att behöva kedja .then().
+- Används för; Hämta data från en server (API-anrop). Vänta på att filer ska laddas. Utföra andra långsamma operationer (t.ex. databasanrop).
+REACT UDEMY
+
+*State uppdaterar komponenten med en re-render från en 'event handler' --> setCount((count)=> count + 1);
+*Derived state: Om du kan räkna ut ett värde från annan state → gör det direkt! Då är det derived state. Ex:
+-export default function Game() {
+  const [score, setScore] = useState(0); // bara score är state
+  // level är derived state – den räknas ut direkt från score
+  const level = score > 200 ? 3 : score > 100 ? 2 : 1;
+  return (
+    <div>
+      <h1>Poäng: {score}</h1>
+      <h2>Nivå: {level}</h2>
+      <button onClick={() => setScore(score + 10)}>Lägg till 10 poäng</button>
+    </div>
+  );
+}
+*{children}: Använd children när du vill skicka innehåll som visas inuti komponenten. Ex:
+-function MyButton({ children }) {
+  return <button>{children}</button>;
+}
+<MyButton>Tryck här!</MyButton>
+<MyButton>Starta spelet</MyButton>
+- Man kan då justera innehållet inuti komponenten med JSX genom att använda öppning/stängning av komponenten istället för en enskild komponent med props.
+*Props: Använd vanliga props när du vill skicka värden eller inställningar.
+*Inverse data flow: Flytta upp state till en parent komponent, och passera ex setCupong (useState) till en child komponent och få ett tvåvägs dataflow
+*Lägg till ett Item i en Array: setItems((items) => [...items, item]); <--- lägg i en handlerfunctions som tar item som parameter och passera handlerfunction ner till komponenten som behöver den.
+*Ta bort ett Item ur en Array: setItems((items) => items.filter((item) => item.id !== id)); <--- Lägg i en handlerfunction som tar emot id som parameter och passera ser handlerfunction som props till rätt komponent. Aktivera sedan med en arrowfunction in´en onclick={} -->
+<button onClick={()=> onDeleteItem(item.id)}
+*Rensa en Array: setItems([]) --> lägg inuti en handlerfunction.
+*Dela upp komponenter till separata komponent filer: kolappsa funktionen --> högerklicka ---> refactor ---> move to new file.
+*Handlerfunctions: En handlerfunktion är som robotens instruktioner. Det är en speciell funktion som säger vad som ska hända när något händer — till exempel när du klickar på en knapp, skriver i en ruta, eller skickar in ett formulär.
+*Visa en komponent: {showAddFriend && <FormAddFriend onAddFriend={handleAddFriend} />} och {showAddFriend ? "Close" : "Add friend"}.
+-Lägg till js-mode runt komponenten {showAddfriend && **Komponent**}
+*e.preventDefault(): används för att stoppa standardbeteendet (t.ex. ladda om sidan). Man använder det i formulär när man vill göra något med datan utan att sidan ska laddas om. onChange används för att fånga det användaren skriver i en input, och spara det i t.ex. en state.
+
+///////////////////JAVASCRIPT ESSENTIALS//////////////////
+*Destructuring: 'Destructuring är en syntax i JavaScript som gör det lättare att plocka ut värden från arrays eller objekt och tilldela dem till variabler på ett enkelt sätt.'
+*Objekt destructuring → för att få ut värden via deras property-namn.
+- const { title, author, pages, publicationDate, genres, hasMovieAdaptation } =
+  book; 
+*Array destructuring:
+- Arrayer → för att få ut värden via deras position/index.
+- const [primaryGenre, secondaryGenre] = genres;
+
+*Terneraries: 'Ternary operators (eller "ternaries") används för kortare if-else-logik direkt i JSX – ofta vid rendering'.
+- När du vill visa olika komponenter eller text beroende på ett villkor.
+- const pagesRange = pages > 100 ? "over a thousand" : "less than 100";
+
+*Arrow functions
+- För att skriva komponenter (funktionella komponenter).
+- För eventhandlers (t.ex. onClick).
+- const Hello = () => {
+  return <h1>Hej världen!</h1>;
+-const getYear(str) => str.split("-")[0];
+
+*&& -end operator
+-Short circut om första värdet blir false.
+-const hasManyPages = pages > 1000 && "This book is long";
+
+*|| -or operator
+-Short circut när första värdet är true.
+-const bookTitle = title || "No title available";
+
+*?? -Nullish coalescing
+-Default om värdet är falsy, ex tom string eller 0. som '|| -or operator' men retunerar fortfarande '0' istället för NaN/undefined.
+-const missingData = null; -const result = missingData ?? "Fallback value";
+
+*Rest operator: 'Samla ihop övrig information från arrayen med Rest ... FÖRE variabeln som placeras i slutet'. Resterande genres hamnar nedan i 'otherGenres'.
+- const [primaryGenre, secondaryGenre, ...otherGenres] = genres;
+- När du vill kopiera en array eller ett objekt utan att förändra originalet (immutability).
+- När du vill slå ihop flera arrayer eller objekt.
+- När du skickar in element som enskilda argument till en funktion.
+
+*Spread operator i en array (POST): 'Används när du kopierar eller lägger till i arrays/objekt, eller skickar argument till funktioner';
+-const newGenres = [...genres, "epic fantasy"]; <-- Lägger till en ny parameter i en array EFTER att spread har använts
+- Den gör motsatsen till rest-operatorn: den "packar upp"'.
+*Spread i ett obekt: 'lägg till nya parametrar'
+-const updatedBook = { ...book, moviePublicationDate: "2001-12-19" };
+*Spread i ett objekt där vi skriver över en property:
+- const updatedBook = {
+  ...book,
+  moviePublicationDate: "2001-12-19",
+  pages: 1210,
+};
+
+*.map(): 'När du vill loopa över en array och skapa en ny array baserat på innehållet, eller utföra en operation på objektet/arrayen eller tex. för att rendera listor i React.'
+- const books = ["Dune", "1984", "The Hobbit"];
+const BookList = () => {
+  return (
+    <ul>
+      {books.map((book, index) => (
+        <li key={index}>{book}</li>
+      ))}
+    </ul>
+  );
+};
+-const x = [1,2,3,4,5].map((el)=> el * 2)
+-const titles = books.map((book)=> book.title) --> Skapar en array med book.titles.
+-const essentialData = books.map(book=> ({
+title: book.title,
+author: book.author
+}))					       --> Skapar en array med book.title och book.author.
+
+*.filter(): Lägger ett condition och filtrerar ut allt i en Array som är true och skapar en ny array. Det går även att köra filter på den nya arrayen.
+-const longBooks = getBooks().filter((book) => book.pages > 500);	<-- Skapar en ny array med alla books med över 500 pages.
+-const adventureBooks = getBooks().filter((book) =>		
+  book.genres.includes("adventure")					<-- Skapar en ny array med alla books med genres 'adventure' i objektet.
+);
+
+*reduce(): mer komplicerad, men kan göra det mesta i form av matematiska ekvationer. Nedan hämtas alla böcker och räknar ut alla sidor på samtliga böcker:
+-const pagesAllBooks = getBooks().reduce((acc, book) => acc + book.pages, 0);
+
+*sort(): Sorterar en array från lägst till högst eler vice verca. VIKTIGT: sort() muterar en array, den skapar inte en ny. För att lösa det bör man chaina slice() för att skapa en kopia.
+-const arr = [3, 7, 1, 9, 6];
+const sorted = arr.slice()sort((a, b) => a - b);			<.. Sorterad lista fallande ordning.
+-const sortedByPages = books.slice().sort((a, b) => b.pages - a.pages);	<-- Sorterad lista i stigande oprdning
+
+POST/DELETE/PUT - Immutable Arrays
+*Immutible arrays, uppdatera en array med en ny array.
+*Lägg till en book (spread)-POST:
+-const booksAfterAdd = [...books, newbook]; <--(spread och lägg till)
+*Ta bort en bok (filter)-DELETE:
+-const booksAfterrDelete = booksArfterAdd.filter(books => books.id !==3) <--()iterera books och filtrera bort book med id = 3)
+*Ändra i en bok:
+-const booksAfterUpdate (map)-PUT = booksAfterDelete.map(books=>nbook.id ===1 ? {...book, pages: 1} : book) <--(mapa arrayen och gör book med id = 1 till 1 sida)
+
+*Async/Await- lämnar ett promise som behöver inväntas. 
+
+///////////////////COMPONENTS, PROPS AND JSX//////////////////
+*Props. Passeras från förälder till children, skickas som argument till en funktion. Props är immutable, det går inte att ändra på datan! Behöver datan manipuleras så behövs State. 
+*map(), använd för att rendera ut listor, react behöver en 'key' prop när listor ska renderas. Detta fungerar i en komponent:
+-        {pizzaData.map((pizza) => (
+          <Pizza pizzaObj={pizza} key={pizza.name} />
+        ))}
+*Conditial rendering i en react komponent:
+- function Pizza({ name, soldOut }) {
+  return (
+    <li className={`pizza ${soldOut ? "sold-out" : ""}`}>
+      <h3>{name}</h3>
+      {soldOut ? <p>Sold out!</p> : <p>Available now!</p>}
+    </li>
+  );
+}
+
+///////////////////STATE, EVENTS & FORMS//////////////////
+*State: Data som en komponent kan hålla över tid, se det som komponentens minne. Att uppdatera State triggar komponenten att uppdateras. Det gör att jag kan uppdatera en komponents view hålla lokala variabler mellan renderingar.
+-   const [step, setStep] = useState(1); <--- Hook, hooks kan bara kallas på top-level i en funktion.
+*State --> intern data för komponenten
+*Props --> Extern data från parent, read only
+*Form inputfield, skicka med parametrar i html fältet för input "controlled element":
+-<input value={step} onChange={(e) => setStep(Number(e.target.value))} />
+*Reset knapp på useState: <button onClick={() => {
+          setCount(0);
+          setStep(5); }}>
+
+///////////////////THINKING IN REACT, STATE MANAGMENT//////////////////
+1. Bryt ner UI till komponenter.
+2. Bygg en statisk version (utan react)
+3. STATE: När? global vs local? Vart ska state sitta?'
+4. DATA FLOW: one way data flow! Child to parent! Global State!
+WHEN:
+*Need to store data --> Will data change?
+-No --> regular const variable
+-Yes --> can be computed from existing state/props?
+-Yes --> Derive State
+-No --> Should it re-render the component? 
+-No --> Ref  (useRef)
+-Yes --> Place new piece of state in the component.
+WHERE:
+*Only used by this component?
+-Yes --> Leave in component
+-No --> Also used by a child component?
+-Yes --> pass to child via props
+-No --> used by one or few sibling components?
+-Yes --> lift state up to first common parent
+-No --> Global State
+*Lifting up state! --> lyft till en parent komponent och passera som props genom komponenterna från ex. App:       <Form onAddItems={handleAddItems} /> 
+*DERIVED STATE: State  som räknas från en redan existerande state eller props.
+
+///////////////////ÖVRIGT///////////////
+*12. Setting up Dev inviroment. - Snippets för kortkomandon!
+*alt + pil upp/ner --> flytta kodraden
+* &times; --> X
+
+///////////////////FRÅGOR/TEST///////////////	
+JAVASCRIPT ESSENTIALS:
+1. Vad är Javasrcipt destructuring och när använder man det (arrays & object)?
+2. NÄR och HUR använder man 'terneraries' i React?
+3. HUR och NÄR använder man en arrow functions i React?
+4. HUR används &&- end operatorn?
+5. HUR används ||- or operatorn?
+6. NÄR används ??- nullish coalescing?
+7. Vad gör rest operatorn och när används den?
+8. Vad gör spread operatorn och när/hur används den?
+9. NÄR och HUR används map() method?	
+10. NÄR och HUR används filter() method?
+11. NÄR och HUR används reduce() method?
+12. NÄR och HUR används sort() method?
+13. NÄR och HUR används 'Immutable arrays'(POST/DELETE/PUT method)?
+14. Hur används async/await i Javascript?
+
+///////////////////COMPONENTS, PROPS AND JSX//////////////////
+1. Vad är props och hur används de i react?
+2. Hur används map() för att rendera ut listor i react?
+3. Hur använder man conditional rendering för att rendera komponenter?
+
+///////////////////TESTSVAR///////////////	
+JAVASCRIPT ESSENTIALS:
+1. Vad är Javasrcipt destructuring och när använder man det (arrays & object)?
+SVAR: 'Destructuring är en syntax i JavaScript som gör det lättare att plocka ut värden från arrays eller objekt och tilldela dem till variabler på ett enkelt sätt.'
+- Objekt → för att få ut värden via deras property-namn.
+- Arrayer → för att få ut värden via deras position/index.
+
+2. NÄR och HUR använder man 'terneraries' i React?
+SVAR: 'Ternary operators (eller "ternaries") används för kortare if-else-logik direkt i JSX – ofta vid rendering.'
+- När du vill visa olika komponenter eller text beroende på ett villkor.
+- När du vill undvika långa if-satser i return().
+- const terenarie = Villkor ? uttryck_om_sant : uttryck_om_falskt;
+
+3. HUR och NÄR använder man en arrow functions i React?
+SVAR:
+- För att skriva komponenter (funktionella komponenter).
+- För event handlers (t.ex. onClick).
+- const Hello = () => {
+  return <h1>Hej världen!</h1>;
+};
+ 
+4. NÄR och HUR används &&- end operatorn?
+SVAR: '&& används ofta för att visa något i UI:t endast om ett villkor är sant. Det är ett kort sätt att skriva if-logik direkt i JSX'
+- Enklare än att skriva if-satser.
+- Om isLoggedIn är true, visas texten: "Välkommen tillbaka!"
+- const WelcomeMessage = ({ isLoggedIn }) => {
+  return (
+    <div>
+      {isLoggedIn && <p>Välkommen tillbaka!</p>}
+    </div>
+  );
+};
+
+5. NÄR och HUR används ||- or operatorn?
+SVAR: '|| används när du vill visa ett fallback-värde (ersättning) om det första värdet är falsy (t.ex. null, undefined, false, "", 0).'
+- username = "Anna" → Visas: "Hej Anna! Om username = null eller undefined → Visas: "Hej gäst!" 
+-const WelcomeMessage = ({ username }) => {
+  return <p>Hej {username || "gäst"}!</p>;
+};
+
+6. NÄR och HUR används ??- nullish coalescing?
+SVAR: 'När du vill ge ett fallback-värde endast om det första värdet är null eller undefined, men inte om det är t.ex. false, 0, eller "" (tom sträng).'
+- När du vill behålla värden som 0, false eller "" men bara ersätta null eller undefined.
+- count = 0 → Visar: "Antal varor: 0" och count = undefined → Visar: "Antal varor: okänt"
+- const Items = ({ count }) => {
+  return <p>Antal varor: {count ?? "okänt"}</p>;
+};
+
+7. Vad gör rest operatorn och när används den?
+SVAR: 'Rest operatorn (...) används för att samla in resterande värden från en array eller ett objekt i en ny array eller nytt objekt. Den "packar ihop" resten'
+- När du vill ta ut vissa delar men spara övriga delar i en separat variabel.
+- När du skriver funktioner med okänt antal argument. 
+
+8. Vad gör spread operatorn och när/hur används den?
+SVAR: 'Spread operatorn (...) används för att sprida ut (kopiera) innehållet i en array eller ett objekt. Den gör motsatsen till rest-operatorn: den "packar upp"'.
+- När du vill kopiera en array eller ett objekt utan att förändra originalet (immutability).
+- När du vill slå ihop flera arrayer eller objekt.
+- När du skickar in element som enskilda argument till en funktion.
+
+9. NÄR och HUR används map() method?
+SVAR: 'När du vill loopa över en array och skapa en ny array baserat på innehållet — t.ex. för att rendera listor i React.'
+- map() returnerar en ny array.
+- Glöm inte key-prop när du renderar listor i React.
+- const books = ["Dune", "1984", "The Hobbit"];
+const BookList = () => {
+  return (
+    <ul>
+      {books.map((book, index) => (
+        <li key={index}>{book}</li>
+      ))}
+    </ul>
+  );
+};
+
+10. NÄR och HUR används filter() method?
+SVAR: 'När du vill skapa en ny array som endast innehåller de element som uppfyller ett visst villkor.'
+- const longBooks = books.filter((book) => book.pages > 300);
+console.log(longBooks);
+ 
+11. NÄR och HUR används reduce() method?
+SVAR: 'När du vill omvandla en array till ett enda värde – t.ex. summera tal, slå ihop objekt, eller bygga upp något nytt från en lista.'
+- reduce() tar två argument: en callback och ett startvärde (t.ex. 0 för summor)
+- Det är superkraftigt, men kan vara lite svårare att läsa än map() och filter() – använd det när det verkligen behövs.
+- const CartTotal = ({ cartItems }) => {
+  const total = cartItems.reduce((sum, item) => sum + item.price, 0);
+  return <p>Total: ${total}</p>;
+};
+
+12. NÄR och HUR används sort() method?
+SVAR: 'När du vill ändra ordningen på element i en array – till exempel sortera nummer, boktitlar, datum eller andra egenskaper'
+-.sort() muterar (ändrar) originalarrayen! Vill du behålla originalet, använd .slice() först:
+- const sortedBooks = books.slice().sort((a, b) => b.pages - a.pages);
+
+ 
+13. NÄR och HUR används 'Immutable arrays'(POST/DELETE/PUT method)?
+SVAR: 'Du använder immutable arrays när du vill bevara oförändrade data och skapa en ny kopia av en array istället för att direkt modifiera den. Detta är särskilt viktigt i applikationer som hanterar state, till exempel i React, där state inte bör muteras direkt.'
+- Immutable arrays är ofta fördelaktiga för att skapa förutsägbara och konsekventa applikationer, särskilt när det gäller state i React.
+-Använd alltid kopior av arrayer eller objekt för att undvika oavsiktliga mutationer.
+- POST: const updatedBooks = [...books, newBook]; (spread)
+- DELETE; const updatedBooks = books.filter((book) => book.title !== titleToRemove)
+- PUT: const updatedBooks = books.map((book) =>
+  book.title === updatedBook.title ? { ...book, ...updatedBook } : book
+);
+
+14. Hur används async/await i Javascript?
+SVAR: 'async och await är ett par funktioner i JavaScript som gör det enklare att arbeta med asynkrona operationer.'
+- async används för att deklarera en funktion som kommer att returnera ett Promise, och den gör att vi kan använda await inuti den funktionen.
+- await används för att vänta på att ett Promise ska lösas (eller avvisas), och det gör att vi kan arbeta med resultatet av det Promise utan att behöva kedja .then().
+- Används för; Hämta data från en server (API-anrop). Vänta på att filer ska laddas. Utföra andra långsamma operationer (t.ex. databasanrop).

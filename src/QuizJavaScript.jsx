@@ -1,0 +1,34 @@
+const Quiz = [
+  {
+    Question,
+    Answer,
+  },
+  {
+    Question,
+    Answer,
+  },
+  {
+    Question,
+    Answer,
+  },
+  {
+    Question,
+    Answer,
+  },
+  {
+    Question,
+    Answer,
+  },
+  {
+    Question,
+    Answer,
+  },
+  {
+    Question,
+    Answer,
+  },
+  {
+    Question,
+    Answer,
+  },
+];
